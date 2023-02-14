@@ -62,3 +62,116 @@ Wymagania:
 •	There should be a public void initialize() method in the MinesweeperGame class.
 •	The Game class's setScreenSize(int, int) method must be called with arguments (SIDE, SIDE) in the initialize() method.
  */
+
+package com.codegym.games.minesweeper;
+import com.codegym.engine.cell.*;
+
+
+public class MinesweeperGame extends Game {
+    
+    private static final int SIDE = 9;
+    private GameObject[][]gameField = new GameObject[SIDE][SIDE];
+    
+    public void initialize()
+    {
+        setScreenSize(SIDE, SIDE);
+        createGame();
+    }
+    //gameField[x][y] = new GameObject(x, y);
+    
+    private void createGame()
+    {
+        for(int y = 0; y < SIDE; y++)
+        {
+            for(int x = 0; x < SIDE; x++)
+            {
+                gameField[y][x] = new GameObject(x, y);
+                setCellColor(x, y, Color.ORANGE);
+            }
+        }
+    }
+}
+
+/*
+Minesweeper is aptly named. The player has to deal with mines, though maybe it would be best for the player to stay far away from them :)
+
+Let's add these mines to the game. To do this, we'll adapt the GameObject class to account for the fact that a cell can be a mine (by adding the isMine flag).
+
+Don't create a new constructor: editing the existing constructor will suffice.
+
+Additionally, when creating the cells, add code that generates mines with a probability of 10%. The easiest way is to use the Game class's getRandomNumber(int n) method, which returns a random number from 0 to n-1 inclusive. Therefore, the probability of generating a certain number is 1/n.
+
+And don't forget to count the number of generated mines in the MinesweeperGame class.
+
+Once you've done all that, run the program and check that nothing is broken :)
+
+Requirements:
+•	The GameObject class must have a public boolean isMine field.
+•	The GameObject class must have one constructor with (int, int, boolean) parameters that are used to initialize the x, y, and isMine fields, in that order.
+•	There must be a private int countMinesOnField variable in the MinesweeperGame class.
+•	When cells are created in the createGame() method, you should randomly determine whether each cell will have a mine. Use the Game class's getRandomNumber(int) method with the argument 10.
+•	After the createGame() method is executed, the countMinesOnField variable should be assigned the value of the number of mines in the field.
+*/
+package com.codegym.games.minesweeper;
+
+import com.codegym.engine.cell.Color;
+import com.codegym.engine.cell.Game;
+
+public class MinesweeperGame extends Game {
+    private static final int SIDE = 9;
+    private GameObject[][] gameField = new GameObject[SIDE][SIDE];
+    private int countMinesOnField;
+
+    @Override
+    public void initialize() {
+        setScreenSize(SIDE, SIDE);
+        createGame();
+    }
+
+    private void createGame() {
+        for (int y = 0; y < SIDE; y++) {
+            for (int x = 0; x < SIDE; x++) {
+                int randomNumber = getRandomNumber(10);
+                boolean isMine = randomNumber < 1;
+                if (isMine) {
+                    countMinesOnField++;
+                }
+                gameField[y][x] = new GameObject(x, y, isMine);
+                setCellColor(x, y, Color.ORANGE);
+            }
+        }
+    }
+}
+
+package com.codegym.games.minesweeper;
+
+public class GameObject {
+    public int x;
+    public int y;
+    public boolean isMine;
+
+    GameObject(int x, int y, boolean isMine) {
+        this.x = x;
+        this.y = y;
+        this.isMine = isMine;
+    }
+}
+/* 
+
+We need to store the state of the playing field's cells somewhere. To do this, create a matrix (two-dimensional array) with the dimensions of the playing field. Populate the matrix with GameObject objects using this formula:
+
+gameField[y][x] = new GameObject(x, y);
+Now let's display all the cells on the screen.
+The Game class's setCellColor(int, int, Color) method, whose parameters are the cell coordinates and color, will help us accomplish this.
+Call it for each cell and pass the cell coordinates and any color (for example, Color.ORANGE) as arguments.
+We suggest putting the logic to draw the matrix into a separate createGame() method, which we then call from the initialize method(). Run the program and see what happens.
+
+Hint: use loops to call the setCellColor(int, int, Color) method for each cell of the matrix.
+
+Requirements:
+The MinesweeperGame class must have a private GameObject[][] gameField matrix (two-dimensional array) whose dimensions are SIDExSIDE.
+The MinesweeperGame class must have a private void createGame() method.
+In the createGame method(), you need to populate each cell of the gameField array with a new GameObject object with corresponding x and y coordinates.
+In the createGame() method, for each cell in the gameField array, you need to call the setCellColor(int, int, Color) method with the following arguments: x and y coordinates, as well as any color (for example, Color.ORANGE).
+The createGame() method must be called in the initialize() method.
+*/
